@@ -1,0 +1,1 @@
+# mst-inventario-2026
