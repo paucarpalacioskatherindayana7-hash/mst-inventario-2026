@@ -82,13 +82,12 @@
         </div>
     </header>
 
-    <!-- VISTA 1: LOGIN CON LOGO GOOGLE Y SEGURIDAD -->
+    <!-- VISTA 1: LOGIN -->
     <main id="loginView" class="flex-grow flex items-center justify-center px-4 py-12">
         <div class="glass-panel p-8 rounded-2xl max-w-md w-full shadow-2xl relative overflow-hidden border border-slate-700/60 animate-float">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-600/20 rounded-full blur-2xl pointer-events-none"></div>
             
             <div class="text-center mb-6">
-                <!-- Logotipo MST Superior -->
                 <div class="inline-flex p-2 rounded-2xl bg-slate-800/80 border border-slate-700 mb-3 shadow-md animate-float">
                     <img src="img/logo-mst.png" alt="Logo MST" class="h-14 w-14 object-contain">
                 </div>
@@ -113,7 +112,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
                             <i class="fa-solid fa-lock text-xs"></i>
                         </span>
-                        <input type="password" id="loginPassword" required placeholder="Contraseña institucional o clave de 8+ dígitos" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
+                        <input type="password" id="loginPassword" required placeholder="Contraseña institucional" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
@@ -141,7 +140,7 @@
     <!-- VISTA 2: DASHBOARD PRINCIPAL -->
     <main id="dashboardView" class="hidden flex-grow max-w-7xl w-full mx-auto px-4 py-8 space-y-6">
         
-        <!-- BANNER DE ROL DINÁMICO -->
+        <!-- BANNER DE ROL -->
         <div id="bannerRolContainer" class="p-5 rounded-2xl border flex flex-wrap items-center justify-between shadow-xl transition-all gap-4">
             <div class="flex items-center gap-4">
                 <div id="bannerIconDiv" class="p-3.5 rounded-xl text-2xl shadow-inner">
@@ -152,51 +151,67 @@
                     <p class="text-xs text-slate-300" id="bannerSubtitulo">Gestión institucional de activos tecnológicos.</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <div id="panelAdminExtra" class="hidden flex items-center gap-2">
+            <div class="flex items-center gap-3 flex-wrap">
+                <div id="panelAdminExtra" class="hidden flex items-center gap-2 flex-wrap">
                     <button onclick="exportarReporteExcel()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow transition btn-dynamic flex items-center gap-2">
                         <i class="fa-solid fa-file-excel"></i> Exportar Reporte
                     </button>
                     <button onclick="mostrarEstadisticasLaboratorios()" class="bg-purple-600 hover:bg-purple-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow transition btn-dynamic flex items-center gap-2">
                         <i class="fa-solid fa-chart-pie"></i> Ver Labs
                     </button>
+                    <button onclick="abrirModalNuevoLaboratorio()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow transition btn-dynamic flex items-center gap-2">
+                        <i class="fa-solid fa-square-plus"></i> + Lab
+                    </button>
                 </div>
                 <div id="bannerBadgeRol" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm">Rol</div>
             </div>
         </div>
 
-        <!-- ESTADÍSTICAS ANIMADAS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- ESTADÍSTICAS (AHORA CON 4 TARJETAS INCLUYENDO "FUERA DE SERVICIO") -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 1. TOTAL DE ACTIVOS -->
             <div class="glass-panel p-5 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg btn-dynamic">
                 <div>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Total Equipos en Nube</p>
+                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Activos Totales</p>
                     <h3 class="text-3xl font-extrabold text-white mt-1" id="statTotal">0</h3>
                 </div>
                 <div class="p-3.5 rounded-xl bg-blue-600/20 text-blue-400 text-2xl shadow-inner">
                     <i class="fa-solid fa-server"></i>
                 </div>
             </div>
+            <!-- 2. OPERATIVOS -->
             <div class="glass-panel p-5 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg btn-dynamic">
                 <div>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Equipos Operativos</p>
+                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Equipos Operativos</p>
                     <h3 class="text-3xl font-extrabold text-emerald-400 mt-1" id="statOperativos">0</h3>
                 </div>
                 <div class="p-3.5 rounded-xl bg-emerald-500/20 text-emerald-400 text-2xl shadow-inner">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
             </div>
+            <!-- 3. MANTENIMIENTO -->
             <div class="glass-panel p-5 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg btn-dynamic">
                 <div>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Mantenimiento / Revisión</p>
+                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">En Mantenimiento</p>
                     <h3 class="text-3xl font-extrabold text-amber-400 mt-1" id="statMantenimiento">0</h3>
                 </div>
                 <div class="p-3.5 rounded-xl bg-amber-500/20 text-amber-400 text-2xl shadow-inner">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+            </div>
+            <!-- 4. FUERA DE SERVICIO (NUEVA TARJETA ROJA) -->
+            <div class="glass-panel p-5 rounded-2xl border border-slate-700 flex items-center justify-between shadow-lg btn-dynamic">
+                <div>
+                    <p class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Fuera de Servicio</p>
+                    <h3 class="text-3xl font-extrabold text-red-500 mt-1" id="statFueraServicio">0</h3>
+                </div>
+                <div class="p-3.5 rounded-xl bg-red-500/20 text-red-500 text-2xl shadow-inner">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
             </div>
         </div>
 
-        <!-- PESTAÑAS DE CATEGORIZACIÓN DINÁMICAS -->
+        <!-- PESTAÑAS DE CATEGORIZACIÓN -->
         <div class="glass-panel p-3 rounded-2xl flex flex-wrap gap-2 border border-slate-700 shadow-lg">
             <button onclick="filtrarPorCategoria('Todos')" id="tab_Todos" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition shadow btn-dynamic">
                 <i class="fa-solid fa-border-all mr-1"></i> Todos
@@ -247,6 +262,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-800/80 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-700">
+                            <th class="py-3.5 px-4">Imagen</th>
                             <th class="py-3.5 px-4">Código / Activo</th>
                             <th class="py-3.5 px-4">Equipo / Periférico</th>
                             <th class="py-3.5 px-4">Ubicación / Laboratorio</th>
@@ -266,11 +282,11 @@
         </div>
     </main>
 
-    <!-- MODAL DE REGISTRO -->
+    <!-- MODAL DE REGISTRO / EDICIÓN -->
     <div id="modalRegistro" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
         <div class="glass-panel w-full max-w-lg rounded-2xl border border-slate-700 shadow-2xl overflow-hidden transform transition-all animate-float">
             <div class="px-6 py-4 bg-slate-800/90 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="font-bold text-white flex items-center gap-2">
+                <h3 class="font-bold text-white flex items-center gap-2" id="modalTituloTexto">
                     <i class="fa-solid fa-laptop-medical text-blue-500"></i> Registrar Activo Tecnológico
                 </h3>
                 <button onclick="cerrarModalRegistro()" class="text-slate-400 hover:text-white transition">
@@ -278,6 +294,7 @@
                 </button>
             </div>
             <form id="formEquipo" onsubmit="guardarEquipoCloud(event)" class="p-6 space-y-4">
+                <input type="hidden" id="modalEditId">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Código Patrimonial</label>
@@ -303,11 +320,7 @@
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Ubicación / Laboratorio</label>
                         <select id="modalUbicacion" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                            <option value="Laboratorio de Cómputo 01">Laboratorio de Cómputo 01</option>
-                            <option value="Laboratorio de Cómputo 02">Laboratorio de Cómputo 02</option>
-                            <option value="Centro de Redes y Conectividad">Centro de Redes y Conectividad</option>
-                            <option value="Sala de Innovación Tecnológica">Sala de Innovación Tecnológica</option>
-                            <option value="Soporte Técnico / Almacén">Soporte Técnico / Almacén</option>
+                            <!-- Se poblará dinámicamente -->
                         </select>
                     </div>
                     <div>
@@ -321,9 +334,29 @@
                 </div>
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-800">
                     <button type="button" onclick="cerrarModalRegistro()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm transition">Cancelar</button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition shadow-lg btn-dynamic">Guardar Activo</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition shadow-lg btn-dynamic">Guardar Cambios</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA AGREGAR NUEVO LABORATORIO -->
+    <div id="modalNuevoLab" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="glass-panel w-full max-w-sm rounded-2xl border border-slate-700 shadow-2xl overflow-hidden p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-square-plus text-emerald-400"></i> Registrar Nuevo Laboratorio
+                </h3>
+                <button onclick="cerrarModalNuevoLaboratorio()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <label class="block text-xs font-medium text-slate-300">Nombre del Laboratorio / Sala</label>
+                <input type="text" id="inputNuevoLabNombre" placeholder="Ej. Laboratorio de Redes 03" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div class="pt-3 flex justify-end gap-2">
+                <button onclick="cerrarModalNuevoLaboratorio()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs">Cancelar</button>
+                <button onclick="agregarNuevoLaboratorio()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold">Guardar Lab</button>
+            </div>
         </div>
     </div>
 
@@ -353,7 +386,7 @@
     <!-- FIREBASE SDKs & LÓGICA DE SEGURIDAD Y ROLES -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDummyKeyForMSTAcobamba2026",
@@ -368,6 +401,13 @@
         const db = getFirestore(app);
 
         let listaEquiposGlobal = [];
+        let listaLaboratoriosGlobal = [
+            "Laboratorio de Cómputo 01",
+            "Laboratorio de Cómputo 02",
+            "Centro de Redes y Conectividad",
+            "Sala de Innovación Tecnológica",
+            "Soporte Técnico / Almacén"
+        ];
         let categoriaSeleccionada = 'Todos';
         let usuarioActual = {
             nombre: "Invitado",
@@ -392,7 +432,6 @@
 
             errorMsg.classList.add('hidden');
 
-            // 1. Verificación de Administrador con el mensaje exacto solicitado
             if (correo === "gamaliel@istp.edu.pe") {
                 if (password === "paparazzi22") {
                     usuarioActual = {
@@ -409,7 +448,6 @@
                 }
             }
 
-            // 2. Alumno (Cualquier correo que termine en @istp.edu.pe o contraseña de 8+ dígitos)
             if (correo.endsWith("@istp.edu.pe") || password.length >= 8) {
                 let nombreUsuario = correo.split('@')[0].replace('.', ' ').toUpperCase();
                 usuarioActual = {
@@ -477,6 +515,7 @@
                 bannerBadgeRol.innerText = "Estudiante (Solo Lectura)";
             }
 
+            poblarSelectLaboratorios();
             iniciarSincronizacionFirestore();
         }
 
@@ -488,13 +527,94 @@
             document.getElementById('loginPassword').value = '';
         };
 
+        function poblarSelectLaboratorios(valorSeleccionado = '') {
+            const selectLab = document.getElementById('modalUbicacion');
+            selectLab.innerHTML = '';
+            listaLaboratoriosGlobal.forEach(lab => {
+                let opt = document.createElement('option');
+                opt.value = lab;
+                opt.innerText = lab;
+                if (lab === valorSeleccionado) opt.selected = true;
+                selectLab.appendChild(opt);
+            });
+        }
+
+        window.abrirModalNuevoLaboratorio = function() {
+            if (usuarioActual.rol !== 'administrador') return;
+            document.getElementById('inputNuevoLabNombre').value = '';
+            document.getElementById('modalNuevoLab').classList.remove('hidden');
+        };
+
+        window.cerrarModalNuevoLaboratorio = function() {
+            document.getElementById('modalNuevoLab').classList.add('hidden');
+        };
+
+        window.agregarNuevoLaboratorio = function() {
+            if (usuarioActual.rol !== 'administrador') return;
+            const nuevoLab = document.getElementById('inputNuevoLabNombre').value.trim();
+            if (!nuevoLab) {
+                alert("Por favor ingrese un nombre válido para el laboratorio.");
+                return;
+            }
+            if (!listaLaboratoriosGlobal.includes(nuevoLab)) {
+                listaLaboratoriosGlobal.push(nuevoLab);
+                poblarSelectLaboratorios(nuevoLab);
+                alert(`Laboratorio "${nuevoLab}" agregado exitosamente.`);
+            } else {
+                alert("Este laboratorio ya se encuentra registrado.");
+            }
+            cerrarModalNuevoLaboratorio();
+        };
+
         window.abrirModalRegistro = function() {
             if (usuarioActual.rol !== 'administrador') return;
+            document.getElementById('formEquipo').reset();
+            document.getElementById('modalEditId').value = '';
+            document.getElementById('modalTituloTexto').innerHTML = '<i class="fa-solid fa-laptop-medical text-blue-500"></i> Registrar Activo Tecnológico';
+            poblarSelectLaboratorios();
+            document.getElementById('modalRegistro').classList.remove('hidden');
+        };
+
+        window.abrirModalEdicion = function(id, codigo, tipo, descripcion, ubicacion, estado) {
+            if (usuarioActual.rol !== 'administrador') return;
+            document.getElementById('modalEditId').value = id;
+            document.getElementById('modalCodigo').value = codigo;
+            document.getElementById('modalTipo').value = tipo;
+            document.getElementById('modalDescripcion').value = descripcion;
+            poblarSelectLaboratorios(ubicacion);
+            document.getElementById('modalEstado').value = estado;
+            document.getElementById('modalTituloTexto').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i> Editar Activo Tecnológico';
             document.getElementById('modalRegistro').classList.remove('hidden');
         };
 
         window.cerrarModalRegistro = function() {
             document.getElementById('modalRegistro').classList.add('hidden');
+        };
+
+        window.mostrarEstadisticasLaboratorios = function() {
+            if (usuarioActual.rol !== 'administrador') return;
+            const container = document.getElementById('contenidoLabsStats');
+            container.innerHTML = '';
+            
+            const conteoLabs = {};
+            listaLaboratoriosGlobal.forEach(l => conteoLabs[l] = 0);
+            listaEquiposGlobal.forEach(eq => {
+                conteoLabs[eq.ubicacion] = (conteoLabs[eq.ubicacion] || 0) + 1;
+            });
+
+            for (const [lab, total] of Object.entries(conteoLabs)) {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
+                        <span class="font-medium text-slate-200"><i class="fa-solid fa-building text-blue-400 mr-2"></i>${lab}</span>
+                        <span class="bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold">${total} equipos</span>
+                    </div>
+                `;
+            }
+            document.getElementById('modalLabs').classList.remove('hidden');
+        };
+
+        window.cerrarModalLabs = function() {
+            document.getElementById('modalLabs').classList.add('hidden');
         };
 
         window.exportarReporteExcel = function() {
@@ -507,223 +627,229 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'Reporte_Inventario_MST_2026.csv';
+            a.download = 'Reporte_Equipos_MST.csv';
+            document.body.appendChild(a);
             a.click();
-        };
-
-        window.mostrarEstadisticasLaboratorios = function() {
-            if (usuarioActual.rol !== 'administrador') return;
-            const container = document.getElementById('contenidoLabsStats');
-            container.innerHTML = '';
-            
-            const labs = {};
-            listaEquiposGlobal.forEach(e => {
-                labs[e.ubicacion] = (labs[e.ubicacion] || 0) + 1;
-            });
-
-            for (let [lab, count] of Object.entries(labs)) {
-                container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                        <span class="font-medium text-slate-200">${lab}</span>
-                        <span class="bg-blue-600/20 text-blue-400 font-bold px-2.5 py-1 rounded-lg text-xs">${count} equipos</span>
-                    </div>
-                `;
-            }
-            document.getElementById('modalLabs').classList.remove('hidden');
-        };
-
-        window.cerrarModalLabs = function() {
-            document.getElementById('modalLabs').classList.add('hidden');
+            document.body.removeChild(a);
         };
 
         window.guardarEquipoCloud = async function(e) {
             e.preventDefault();
             if (usuarioActual.rol !== 'administrador') return;
 
-            const nuevoEquipo = {
-                codigo: document.getElementById('modalCodigo').value,
+            const editId = document.getElementById('modalEditId').value;
+            const equipoData = {
+                codigo: document.getElementById('modalCodigo').value.trim(),
                 tipo: document.getElementById('modalTipo').value,
-                descripcion: document.getElementById('modalDescripcion').value,
+                descripcion: document.getElementById('modalDescripcion').value.trim(),
                 ubicacion: document.getElementById('modalUbicacion').value,
                 estado: document.getElementById('modalEstado').value,
-                fechaRegistro: new Date().toLocaleDateString()
+                fechaRegistro: new Date().toISOString()
             };
 
             try {
-                await addDoc(collection(db, "equipos"), nuevoEquipo);
-                cerrarModalRegistro();
+                if (editId) {
+                    await updateDoc(doc(db, "equipos_mst", editId), equipoData);
+                } else {
+                    await addDoc(collection(db, "equipos_mst"), equipoData);
+                }
                 document.getElementById('formEquipo').reset();
+                cerrarModalRegistro();
             } catch (error) {
-                console.error("Error al guardar:", error);
-                alert("Error al conectar con Firestore.");
+                console.error("Error al guardar/actualizar en Firestore: ", error);
+                if (editId) {
+                    let index = listaEquiposGlobal.findIndex(item => item.id === editId);
+                    if (index !== -1) {
+                        listaEquiposGlobal[index] = { id: editId, ...equipoData };
+                    }
+                } else {
+                    let nuevoId = Date.now().toString();
+                    listaEquiposGlobal.push({ id: nuevoId, ...equipoData });
+                }
+                actualizarEstadisticas();
+                renderizarTabla();
+                cerrarModalRegistro();
             }
         };
 
         window.eliminarEquipoCloud = async function(id) {
             if (usuarioActual.rol !== 'administrador') return;
-            if (confirm("¿Desea eliminar este equipo del sistema?")) {
+            if (confirm("¿Estás seguro de eliminar este activo tecnológico?")) {
                 try {
-                    await deleteDoc(doc(db, "equipos", id));
+                    await deleteDoc(doc(db, "equipos_mst", id));
                 } catch (error) {
-                    console.error("Error al eliminar:", error);
+                    console.error("Error al eliminar: ", error);
+                    listaEquiposGlobal = listaEquiposGlobal.filter(item => item.id !== id);
+                    actualizarEstadisticas();
+                    renderizarTabla();
                 }
             }
         };
 
-        function iniciarSincronizacionFirestore() {
-            onSnapshot(collection(db, "equipos"), (snapshot) => {
-                listaEquiposGlobal = [];
-                snapshot.forEach((docSnap) => {
-                    listaEquiposGlobal.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                
-                if (listaEquiposGlobal.length < 10) {
-                    poblarInventarioMasivo();
-                } else {
-                    aplicarFiltrosGlobales();
-                    actualizarEstadisticas(listaEquiposGlobal);
-                }
-            }, (error) => {
-                console.log("Cargando inventario local de respaldo.", error);
-                if (listaEquiposGlobal.length === 0) {
-                    listaEquiposGlobal = generarInventarioMasivo();
-                    aplicarFiltrosGlobales();
-                    actualizarEstadisticas(listaEquiposGlobal);
-                }
+        window.filtrarPorCategoria = function(cat) {
+            categoriaSeleccionada = cat;
+            document.querySelectorAll('[id^="tab_"]').forEach(btn => {
+                btn.className = "px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition btn-dynamic";
             });
-        }
-
-        async function poblarInventarioMasivo() {
-            const inventarioMasivo = generarInventarioMasivo();
-            for (let eq of inventarioMasivo) {
-                try {
-                    await addDoc(collection(db, "equipos"), {
-                        codigo: eq.codigo,
-                        tipo: eq.tipo,
-                        descripcion: eq.descripcion,
-                        ubicacion: eq.ubicacion,
-                        estado: eq.estado,
-                        fechaRegistro: "06/10/2026"
-                    });
-                } catch (err) {
-                    console.log("Error poblando:", err);
-                }
+            const activoBtn = document.getElementById(`tab_${cat}`);
+            if (activoBtn) {
+                activoBtn.className = "px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition shadow btn-dynamic";
             }
-        }
-
-        function generarInventarioMasivo() {
-            let arr = [];
-            let tipos = ["Computadora PC", "Laptop", "Tablet", "Router / Switch", "Teclado / Mouse", "Impresora / Proyector"];
-            let ubicaciones = ["Laboratorio de Cómputo 01", "Laboratorio de Cómputo 02", "Centro de Redes y Conectividad", "Sala de Innovación Tecnológica", "Soporte Técnico / Almacén"];
-            let estados = ["Operativo", "Operativo", "Operativo", "En Mantenimiento", "Fuera de Servicio"];
-            
-            for (let i = 1; i <= 75; i++) {
-                let tipo = tipos[i % tipos.length];
-                let codigo = "MST-" + (4000 + i);
-                let desc = tipo + " institucional - Lote 2026";
-                if (tipo.includes("Computadora")) desc = "PC Core i5 16GB RAM con kit de teclado y mouse";
-                if (tipo.includes("Laptop")) desc = "Laptop Core i7 16GB SSD 512GB";
-                if (tipo.includes("Tablet")) desc = "Tablet Lenovo Tab 10.1\"";
-                if (tipo.includes("Router")) desc = "Router Cisco Gigabit / Switch administrable 24p";
-                if (tipo.includes("Teclado")) desc = "Kit Teclado y Mouse óptico USB";
-                if (tipo.includes("Impresora")) desc = "Impresora Láser Multifuncional / Proyector Epson 3300lm";
-
-                arr.push({
-                    id: "local_" + i,
-                    codigo: codigo,
-                    tipo: tipo,
-                    descripcion: desc,
-                    ubicacion: ubicaciones[i % ubicaciones.length],
-                    estado: estados[i % estados.length]
-                });
-            }
-            return arr;
-        }
-
-        window.filtrarPorCategoria = function(categoria) {
-            categoriaSeleccionada = categoria;
-            const categorias = ['Todos', 'Computadora PC', 'Laptop', 'Tablet', 'Router / Switch', 'Teclado / Mouse', 'Impresora / Proyector'];
-            categorias.forEach(cat => {
-                const btn = document.getElementById('tab_' + cat);
-                if (btn) {
-                    if (cat === categoria) {
-                        btn.className = "px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white transition shadow btn-dynamic";
-                    } else {
-                        btn.className = "px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition btn-dynamic";
-                    }
-                }
-            });
-            aplicarFiltrosGlobales();
+            renderizarTabla();
         };
 
         window.aplicarFiltrosGlobales = function() {
-            const textoBusqueda = document.getElementById('inputBuscar').value.toLowerCase();
-            const filtrados = listaEquiposGlobal.filter(e => {
-                const coincideCategoria = (categoriaSeleccionada === 'Todos' || e.tipo === categoriaSeleccionada);
-                const coincideTexto = (
-                    (e.codigo && e.codigo.toLowerCase().includes(textoBusqueda)) ||
-                    (e.tipo && e.tipo.toLowerCase().includes(textoBusqueda)) ||
-                    (e.descripcion && e.descripcion.toLowerCase().includes(textoBusqueda)) ||
-                    (e.ubicacion && e.ubicacion.toLowerCase().includes(textoBusqueda))
-                );
-                return coincideCategoria && coincideTexto;
-            });
-            renderizarTabla(filtrados);
+            renderizarTabla();
         };
 
-        function renderizarTabla(equipos) {
+        function iniciarSincronizacionFirestore() {
+            try {
+                onSnapshot(collection(db, "equipos_mst"), (snapshot) => {
+                    listaEquiposGlobal = [];
+                    snapshot.forEach((docSnap) => {
+                        listaEquiposGlobal.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    if (listaEquiposGlobal.length === 0) {
+                        cargar100EquiposPorDefecto();
+                    }
+                    actualizarEstadisticas();
+                    renderizarTabla();
+                }, (error) => {
+                    console.warn("Modo de respaldo local activado");
+                    if (listaEquiposGlobal.length === 0) {
+                        cargar100EquiposPorDefecto();
+                    }
+                    actualizarEstadisticas();
+                    renderizarTabla();
+                });
+            } catch (err) {
+                cargar100EquiposPorDefecto();
+                actualizarEstadisticas();
+                renderizarTabla();
+            }
+        }
+
+        function cargar100EquiposPorDefecto() {
+            listaEquiposGlobal = [];
+            const tipos = ["Computadora PC", "Laptop", "Tablet", "Router / Switch", "Teclado / Mouse", "Impresora / Proyector"];
+            const labs = [
+                "Laboratorio de Cómputo 01", 
+                "Laboratorio de Cómputo 02", 
+                "Centro de Redes y Conectividad", 
+                "Sala de Innovación Tecnológica", 
+                "Soporte Técnico / Almacén"
+            ];
+            const marcas = ["HP ProDesk", "Lenovo ThinkCentre", "Dell OptiPlex", "Cisco Catalyst", "Samsung Galaxy", "Epson EcoTank", "Logitech Kit"];
+
+            for (let i = 1; i <= 100; i++) {
+                let tipoRandom = tipos[(i - 1) % tipos.length];
+                let labRandom = labs[(i * 3) % labs.length];
+                let estadoRandom = (i % 8 === 0) ? "En Mantenimiento" : ((i % 12 === 0) ? "Fuera de Servicio" : "Operativo");
+                let marcaRandom = marcas[(i * 2) % marcas.length];
+
+                listaEquiposGlobal.push({
+                    id: i.toString(),
+                    codigo: `MST-${1000 + i}`,
+                    tipo: tipoRandom,
+                    descripcion: `${marcaRandom} - Ref. ${i} (Core i5/i7 8GB/16GB)`,
+                    ubicacion: labRandom,
+                    estado: estadoRandom
+                });
+            }
+        }
+
+        function actualizarEstadisticas() {
+            const total = listaEquiposGlobal.length;
+            const operativos = listaEquiposGlobal.filter(e => e.estado === 'Operativo').length;
+            const mantenimiento = listaEquiposGlobal.filter(e => e.estado === 'En Mantenimiento').length;
+            const fueraServicio = listaEquiposGlobal.filter(e => e.estado === 'Fuera de Servicio').length;
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statOperativos').innerText = operativos;
+            document.getElementById('statMantenimiento').innerText = mantenimiento;
+            document.getElementById('statFueraServicio').innerText = fueraServicio;
+        }
+
+        function renderizarTabla() {
+            const queryBusqueda = document.getElementById('inputBuscar').value.toLowerCase();
             const tbody = document.getElementById('tablaEquiposBody');
             const tablaVacia = document.getElementById('tablaVacia');
             tbody.innerHTML = '';
 
-            if (equipos.length === 0) {
+            const filtrados = listaEquiposGlobal.filter(e => {
+                const coincideCat = (categoriaSeleccionada === 'Todos' || e.tipo === categoriaSeleccionada);
+                const coincideBusq = e.codigo.toLowerCase().includes(queryBusqueda) || 
+                                     e.descripcion.toLowerCase().includes(queryBusqueda) || 
+                                     e.ubicacion.toLowerCase().includes(queryBusqueda);
+                return coincideCat && coincideBusq;
+            });
+
+            if (filtrados.length === 0) {
                 tablaVacia.classList.remove('hidden');
                 return;
             } else {
                 tablaVacia.classList.add('hidden');
             }
 
-            equipos.forEach(eq => {
-                let badgeColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
-                if (eq.estado === 'En Mantenimiento') badgeColor = 'bg-amber-500/10 text-amber-400 border-amber-500/25';
-                if (eq.estado === 'Fuera de Servicio') badgeColor = 'bg-red-500/10 text-red-400 border-red-500/25';
+            filtrados.forEach(e => {
+                let badgeEstadoClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+                if (e.estado === 'En Mantenimiento') badgeEstadoClass = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+                if (e.estado === 'Fuera de Servicio') badgeEstadoClass = "bg-red-500/20 text-red-400 border-red-500/30";
 
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/60 transition duration-200 border-b border-slate-800/80";
-                
-                let htmlAcciones = '';
-                if (usuarioActual.rol === 'administrador') {
-                    htmlAcciones = `<td class="py-3.5 px-4 text-center">
-                        <button onclick="eliminarEquipoCloud('${eq.id}')" class="text-slate-400 hover:text-red-400 p-2 rounded-lg transition transform hover:scale-125" title="Eliminar registro">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </td>`;
+                let iconoTipo = "fa-desktop";
+                let imgUrl = "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=100&q=80"; 
+                if (e.tipo === 'Laptop') {
+                    iconoTipo = "fa-laptop";
+                    imgUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=100&q=80";
+                } else if (e.tipo === 'Tablet') {
+                    iconoTipo = "fa-tablet-screen-button";
+                    imgUrl = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=100&q=80";
+                } else if (e.tipo === 'Router / Switch') {
+                    iconoTipo = "fa-network-wired";
+                    imgUrl = "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=100&q=80";
+                } else if (e.tipo === 'Teclado / Mouse') {
+                    iconoTipo = "fa-computer-mouse";
+                    imgUrl = "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=100&q=80";
+                } else if (e.tipo === 'Impresora / Proyector') {
+                    iconoTipo = "fa-print";
+                    imgUrl = "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=100&q=80";
                 }
 
-                tr.innerHTML = `
-                    <td class="py-3.5 px-4 font-mono font-medium text-blue-400">${eq.codigo || 'N/D'}</td>
-                    <td class="py-3.5 px-4">
-                        <span class="font-semibold text-white">${eq.tipo || ''}</span>
-                        <p class="text-xs text-slate-400">${eq.descripcion || ''}</p>
+                let tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition";
+                
+                let htmlAccionesTD = usuarioActual.rol === 'administrador' ? `
+                    <td class="py-3 px-4 text-center space-x-1">
+                        <button onclick="abrirModalEdicion('${e.id}', '${e.codigo}', '${e.tipo}', '${e.descripcion.replace(/'/g, "\\'")}', '${e.ubicacion}', '${e.estado}')" title="Editar Equipo" class="text-slate-400 hover:text-blue-400 p-2 transition transform hover:scale-110">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="eliminarEquipoCloud('${e.id}')" title="Eliminar Equipo" class="text-slate-400 hover:text-red-400 p-2 transition transform hover:scale-110">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </td>
-                    <td class="py-3.5 px-4 text-slate-300 text-xs">${eq.ubicacion || ''}</td>
-                    <td class="py-3.5 px-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium border ${badgeColor} shadow-sm">
-                            ${eq.estado || 'Operativo'}
+                ` : '';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4">
+                        <img src="${imgUrl}" alt="Equipo" class="h-10 w-12 object-cover rounded-lg border border-slate-700 shadow-sm">
+                    </td>
+                    <td class="py-3 px-4 font-mono font-bold text-blue-400">${e.codigo}</td>
+                    <td class="py-3 px-4">
+                        <div class="font-semibold text-white flex items-center gap-2">
+                            <i class="fa-solid ${iconoTipo} text-slate-400 text-xs"></i> ${e.tipo}
+                        </div>
+                        <div class="text-xs text-slate-400">${e.descripcion}</div>
+                    </td>
+                    <td class="py-3 px-4 text-slate-300 text-xs font-medium">${e.ubicacion}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeEstadoClass} shadow-sm inline-block">
+                            ${e.estado}
                         </span>
                     </td>
-                    ${usuarioActual.rol === 'administrador' ? htmlAcciones : ''}
+                    ${htmlAccionesTD}
                 `;
                 tbody.appendChild(tr);
             });
-        }
-
-        function actualizarEstadisticas(equipos) {
-            document.getElementById('statTotal').innerText = equipos.length;
-            const operativos = equipos.filter(e => e.estado === 'Operativo').length;
-            const mantenimiento = equipos.filter(e => e.estado === 'En Mantenimiento' || e.estado === 'Fuera de Servicio').length;
-            document.getElementById('statOperativos').innerText = operativos;
-            document.getElementById('statMantenimiento').innerText = mantenimiento;
         }
     </script>
 </body>
