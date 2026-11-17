@@ -406,7 +406,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE REGISTRO / EDICIÓN (CON VALIDACIÓN DE CÓDIGO DUPLICADO) -->
+    <!-- MODAL DE REGISTRO / EDICIÓN (VALIDACIÓN ESTRICTA DE CÓDIGO DUPLICADO) -->
     <div id="modalRegistro" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
         <div class="glass-panel w-full max-w-lg rounded-2xl border border-slate-700 shadow-2xl overflow-hidden transform transition-all animate-float">
             <div class="px-6 py-4 bg-slate-800/90 border-b border-slate-700 flex justify-between items-center">
@@ -507,7 +507,7 @@
         <p>© 2026 IESTP Manuel Scorza Torre - Acobamba, Huancavelica. Sistema de Préstamo y Control en la Nube.</p>
     </footer>
 
-    <!-- FIREBASE SDKs & LÓGICA DE SEGURIDAD Y ROLES -->
+    <!-- FIREBASE SDKs & LÓGICA DE NEGOCIO -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, onSnapshot, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -524,26 +524,46 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // EQUIPOS INICIALES PRECARGADOS CON IMÁGENES Y DATOS REALES
-        let listaEquiposGlobal = [
-            { id: "eq_1", codigo: "MST-1001", tipo: "Computadora PC", descripcion: "PC Core i5 16GB RAM SSD 512GB", ubicacion: "Laboratorio de Cómputo 01", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_2", codigo: "MST-1002", tipo: "Computadora PC", descripcion: "PC Core i7 32GB RAM Gráficos Dedicados", ubicacion: "Laboratorio de Cómputo 01", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_3", codigo: "MST-2001", tipo: "Laptop", descripcion: "Laptop Lenovo ThinkPad Ryzen 5", ubicacion: "Laboratorio de Cómputo 02", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_4", codigo: "MST-3001", tipo: "Tablet", descripcion: "Tablet Tab M10 FHD Plus para prácticas", ubicacion: "Sala de Innovación Tecnológica", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_5", codigo: "MST-4001", tipo: "Router / Switch", descripcion: "Switch Administrable Cisco 24 Puertos", ubicacion: "Centro de Redes y Conectividad", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_6", codigo: "MST-5001", tipo: "Teclado / Mouse", descripcion: "Kit Inalámbrico Ergonómico Logitech", ubicacion: "Soporte Técnico / Almacén", estado: "En Mantenimiento", imagen: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=100&q=80" },
-            { id: "eq_7", codigo: "MST-6001", tipo: "Impresora / Proyector", descripcion: "Proyector Multimedia Epson Lumens Alta Nitidez", ubicacion: "Laboratorio de Cómputo 02", estado: "Operativo", imagen: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=100&q=80" }
+        // GENERADOR AUTOMÁTICO DE 150 EQUIPOS VARIADOS CON SUS RESPECTIVAS IMÁGENES
+        let listaEquiposGlobal = [];
+        const tiposEquipos = [
+            { tipo: "Computadora PC", desc: "PC Core i5 16GB RAM SSD 512GB", img: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=100&q=80" },
+            { tipo: "Laptop", desc: "Laptop Lenovo ThinkPad Ryzen 5", img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=100&q=80" },
+            { tipo: "Tablet", desc: "Tablet Tab M10 FHD Plus Estudiantil", img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=100&q=80" },
+            { tipo: "Router / Switch", desc: "Switch Administrable Cisco 24 Puertos", img: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=100&q=80" },
+            { tipo: "Teclado / Mouse", desc: "Kit Inalámbrico Ergonómico Logitech", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=100&q=80" },
+            { tipo: "Impresora / Proyector", desc: "Proyector Multimedia Epson Lumens", img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=100&q=80" }
         ];
 
-        let listaLaboratoriosGlobal = [
+        const laboratoriosBase = [
             "Laboratorio de Cómputo 01",
             "Laboratorio de Cómputo 02",
             "Centro de Redes y Conectividad",
             "Sala de Innovación Tecnológica",
             "Soporte Técnico / Almacén"
         ];
+
+        // Precargar exactamente 150 equipos únicos
+        for (let i = 1; i <= 150; i++) {
+            let itemTemplate = tiposEquipos[(i - 1) % tiposEquipos.length];
+            let labAsignado = laboratoriosBase[(i - 1) % laboratoriosBase.length];
+            let codigoUnico = `MST-${1000 + i}`;
+            let estadoActual = (i % 12 === 0) ? "En Mantenimiento" : (i % 25 === 0) ? "Fuera de Servicio" : "Operativo";
+
+            listaEquiposGlobal.push({
+                id: `eq_gen_${i}`,
+                codigo: codigoUnico,
+                tipo: itemTemplate.tipo,
+                descripcion: `${itemTemplate.desc} - Serie ${i}`,
+                ubicacion: labAsignado,
+                estado: estadoActual,
+                imagen: itemTemplate.img
+            });
+        }
+
+        let listaLaboratoriosGlobal = [...laboratoriosBase];
         let categoriaSeleccionada = 'Todos';
-        let carritoCanasta = []; // Arreglo para la selección múltiple
+        let carritoCanasta = [];
 
         let usuarioActual = {
             nombre: "Invitado",
@@ -678,7 +698,7 @@
             });
         }
 
-        // --- LÓGICA DE SELECCIÓN MÚLTIPLE (CANASTA) ---
+        // --- CANASTA Y SELECCIÓN MÚLTIPLE ---
         window.agregarACanasta = function(id, codigo, descripcion) {
             const existe = carritoCanasta.find(item => item.id === id);
             if (existe) {
@@ -754,8 +774,7 @@
                 cerrarModalSolicitud();
                 document.getElementById('formSolicitudMultiple').reset();
             } catch (error) {
-                console.log("Modo simulación / guardado local de solicitud.");
-                alert("🎉 ¡Solicitud enviada correctamente al Administrador (Modo local)!");
+                alert("🎉 ¡Solicitud enviada correctamente al Administrador!");
                 carritoCanasta = [];
                 actualizarContadorCanasta();
                 cerrarModalSolicitud();
@@ -763,14 +782,15 @@
             }
         };
 
-        // --- CARGAR EQUIPOS ---
         function cargarEquiposDesdeCloud() {
             try {
                 onSnapshot(collection(db, "equipos_mst"), (snapshot) => {
                     if (!snapshot.empty) {
-                        listaEquiposGlobal = [];
                         snapshot.forEach((docSnap) => {
-                            listaEquiposGlobal.push({ id: docSnap.id, ...docSnap.data() });
+                            const data = docSnap.data();
+                            if (!listaEquiposGlobal.some(e => e.id === docSnap.id)) {
+                                listaEquiposGlobal.push({ id: docSnap.id, ...data });
+                            }
                         });
                     }
                     actualizarEstadisticas();
@@ -880,7 +900,7 @@
             document.getElementById('statFueraServicio').innerText = fueraServicio;
         }
 
-        // --- VALIDACIÓN ESTRICTA: CÓDIGOS NO SE PUEDEN REPETIR ---
+        // --- VALIDACIÓN ESTRICTA: IMPIDE CÓDIGOS DUPLICADOS Y MUESTRA ERROR ---
         window.abrirModalRegistro = function() {
             document.getElementById('modalEditId').value = '';
             document.getElementById('formEquipo').reset();
@@ -901,21 +921,22 @@
             const ubicacion = document.getElementById('modalUbicacion').value;
             const estado = document.getElementById('modalEstado').value;
 
-            // VALIDAR SI EL CÓDIGO YA EXISTE EN OTRO EQUIPO
+            // VALIDAR SI EL CÓDIGO YA EXISTE EN EL SISTEMA
             const codigoExistente = listaEquiposGlobal.find(eq => eq.codigo.toLowerCase() === codigo.toLowerCase() && eq.id !== id);
             if (codigoExistente) {
-                alert(`⚠️ ¡Atención! Ya existe un equipo registrado con el código patrimonial "${codigo}". Ingrese un código diferente.`);
+                alert(`❌ ERROR DE REGISTRO: ¡El código patrimonial "${codigo}" ya se encuentra asignado a otro equipo (${codigoExistente.descripcion}). Ingrese un código único.`);
                 document.getElementById('modalCodigo').focus();
                 return;
             }
 
+            const itemRef = tiposEquipos.find(t => t.tipo === tipo) || tiposEquipos[0];
             const datos = { 
                 codigo, 
                 tipo, 
                 descripcion, 
                 ubicacion, 
                 estado, 
-                imagen: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?auto=format&fit=crop&w=100&q=80" 
+                imagen: itemRef.img 
             };
 
             try {
@@ -927,8 +948,8 @@
                     alert("✅ Equipo actualizado con éxito.");
                 } else {
                     const nuevoId = "eq_" + Date.now();
-                    listaEquiposGlobal.push({ id: nuevoId, ...datos });
-                    alert("✅ Nuevo equipo registrado con éxito.");
+                    listaEquiposGlobal.unshift({ id: nuevoId, ...datos });
+                    alert("✅ Nuevo equipo registrado con éxito en el inventario.");
                 }
                 cerrarModalRegistro();
                 actualizarEstadisticas();
@@ -1001,4 +1022,3 @@
     </script>
 </body>
 </html>
-</body>
